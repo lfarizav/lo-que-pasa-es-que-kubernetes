@@ -273,4 +273,4 @@ video on a production cluster without understanding what it does. This book incl
 
 ---
 
-_Hecho con amor por Luis Felipe Ariza Vesga._
+_Hecho con ❤️ por Luis Felipe Ariza Vesga._
