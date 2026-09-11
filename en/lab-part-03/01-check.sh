@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# lab-part-03 step 1 - grader
+# Generated from the book's lab source. Do not edit here.
+set -euo pipefail
+
+D=/tmp/kcna-lab-3
+K="kubectl --kubeconfig /tmp/kcna-lab-3.kubeconfig --context kind-kcna-comico-p03"
+V2="nginx@sha256:1eff5a5f3fcf8431a0abb7eddf5471fec24e5e1905a2581aeacdb07a4479b92b"
+test -f "$D/01-answer.txt" || exit 1
+grep -qxF "IMAGE_FINAL=$V2" "$D/01-answer.txt" || exit 1
+IMAGE_REAL=$($K -n the-block get deployment the-cart -o jsonpath='{.spec.template.spec.containers[0].image}' 2>/dev/null)
+test "$IMAGE_REAL" = "$V2" || exit 1
+REPLICAS_REAL=$($K -n the-block get pods -l app=the-cart -o jsonpath="{range .items[*]}{.spec.containers[0].image}{'\n'}{end}" 2>/dev/null | grep -c "$V2")
+test "$REPLICAS_REAL" = "3" || exit 1
+grep -qxF "REPLICAS_UPDATED=$REPLICAS_REAL" "$D/01-answer.txt" || exit 1
+REVISION_REAL=$($K -n the-block get deployment the-cart -o jsonpath='{.metadata.annotations.deployment\.kubernetes\.io/revision}' 2>/dev/null)
+test "$REVISION_REAL" = "2" || exit 1
+grep -qxF "REVISION_CURRENT=$REVISION_REAL" "$D/01-answer.txt" || exit 1
+HIST=$($K -n the-block rollout history deployment/the-cart 2>/dev/null)
+echo "$HIST" | grep -q "1.*initial version v1" || exit 1
+echo "$HIST" | grep -q "2.*update to v2" || exit 1
+echo ok
