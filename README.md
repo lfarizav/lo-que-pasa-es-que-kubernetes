@@ -270,3 +270,7 @@ Bug reports are welcome and they are the fastest way to improve the material.
 
 And a warning that is also in the book: never run a command from a book, a blog or a
 video on a production cluster without understanding what it does. This book included.
+
+---
+
+_Hecho con amor por Luis Felipe Ariza Vesga._
